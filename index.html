@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
+<meta charset="utf-8" />
 <title>DraftKings NHL Odds Ticker</title>
 
 <style>
+  /* ===== 8000 x 80 Ribbon Canvas ===== */
   html, body {
     margin: 0;
     padding: 0;
@@ -30,65 +31,22 @@
     gap: 120px;
     font-family: Arial, sans-serif;
     font-size: 64px;
-    color: #00ff9c;
+    line-height: 1;
     will-change: transform;
   }
 
-  .dk-logo {
-    height: 54px;
-    margin-right: 40px;
-  }
-
-  .compliance {
-    font-size: 50px;
+  /* ===== Color System ===== */
+  .away {
     color: #ffffff;
   }
-</style>
-</head>
 
-<body>
-<div id="canvas">
-  <div id="track"></div>
-</div>
-
-<script>
-  const SCROLL_SPEED = 120;
-
-  const demoItems = [
-    "NHL | EDM @ VGK | ML: EDM +114  VGK −135",
-    "NHL | EDM @ VGK | PL: VGK +1.5 (−225)  EDM −1.5 (+185)",
-    "NHL | EDM @ VGK | O/U 6.5 (O −110  U −110)",
-    "NHL | LAK @ VAN | ML: LAK −175  VAN +145",
-    "NHL | LAK @ VAN | O/U 6.5 (O −105  U −115)"
-  ];
-
-  const track = document.getElementById("track");
-
-  let x = 0;
-  let last = performance.now();
-  let contentWidth = 0;
-
-  function buildTicker() {
-    const logo = '<img src="OSB_Linear_21+Logo_FullColor_OnDark.png" class="dk-logo">';
-    const compliance = '<span class="compliance">ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.</span>';
-    const block = `${logo}${demoItems.join(" ⚡ ")} ⚡ ${compliance}`;
-    track.innerHTML = `<span>${block}</span><span>${block}</span>`;
-    requestAnimationFrame(() => {
-      contentWidth = track.scrollWidth / 2;
-    });
+  .home {
+    color: #00ff9c; /* DraftKings green */
   }
 
-  function animate(now) {
-    const dt = (now - last) / 1000;
-    last = now;
-    x -= SCROLL_SPEED * dt;
-    if (Math.abs(x) >= contentWidth) x = 0;
-    track.style.transform = `translateX(${x}px)`;
-    requestAnimationFrame(animate);
+  .odds {
+    color: #00ff9c;
   }
 
-  buildTicker();
-  requestAnimationFrame(animate);
-</script>
-</body>
-</html>
+  .separator-logo {
+    height: 48px;

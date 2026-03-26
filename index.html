@@ -1,110 +1,72 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.3">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
-    span.s1 {font-kerning: none}
-  </style>
+<meta charset="utf-8" />
+<title>DraftKings NHL Odds Ticker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 8000px;
+    height: 80px;
+    background: #000;
+    overflow: hidden;
+  }
+
+  #canvas {
+    width: 8000px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: #000;
+  }
+
+  #track {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    gap: 120px;
+    font-family: "DIN Condensed","Arial Narrow",Arial,sans-serif;
+    font-size: 64px;
+    line-height: 1;
+    letter-spacing: 1px;
+    color: #00ff9c;
+    will-change: transform;
+  }
+
+  .dk-logo {
+    height: 54px;
+    margin-right: 40px;
+    flex-shrink: 0;
+  }
+
+  .compliance {
+    color: #fff;
+    font-size: 52px;
+    letter-spacing: 2px;
+  }
+</style>
 </head>
+
 <body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
-<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;head&gt;</span></p>
-<p class="p1"><span class="s1">&lt;meta charset="utf-8" /&gt;</span></p>
-<p class="p1"><span class="s1">&lt;title&gt;DraftKings NHL Odds Ticker&lt;/title&gt;</span></p>
-<p class="p1"><span class="s1">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;style&gt;</span></p>
-<p class="p1"><span class="s1">  /* ===== 8000 x 80 LED CANVAS ===== */</span></p>
-<p class="p1"><span class="s1">  html, body {</span></p>
-<p class="p1"><span class="s1">    margin: 0;</span></p>
-<p class="p1"><span class="s1">    padding: 0;</span></p>
-<p class="p1"><span class="s1">    width: 8000px;</span></p>
-<p class="p1"><span class="s1">    height: 80px;</span></p>
-<p class="p1"><span class="s1">    background: #000;</span></p>
-<p class="p1"><span class="s1">    overflow: hidden;</span></p>
-<p class="p1"><span class="s1">  }</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  #canvas {</span></p>
-<p class="p1"><span class="s1">    width: 8000px;</span></p>
-<p class="p1"><span class="s1">    height: 80px;</span></p>
-<p class="p1"><span class="s1">    display: flex;</span></p>
-<p class="p1"><span class="s1">    align-items: center;</span></p>
-<p class="p1"><span class="s1">    overflow: hidden;</span></p>
-<p class="p1"><span class="s1">    background: #000;</span></p>
-<p class="p1"><span class="s1">  }</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  #track {</span></p>
-<p class="p1"><span class="s1">    display: inline-flex;</span></p>
-<p class="p1"><span class="s1">    align-items: center;</span></p>
-<p class="p1"><span class="s1">    white-space: nowrap;</span></p>
-<p class="p1"><span class="s1">    gap: 120px;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    font-family: "DIN Condensed", "Arial Narrow", Arial, sans-serif;</span></p>
-<p class="p1"><span class="s1">    font-size: 64px;</span></p>
-<p class="p1"><span class="s1">    line-height: 1;</span></p>
-<p class="p1"><span class="s1">    letter-spacing: 1px;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    color: #00ff9c;</span></p>
-<p class="p1"><span class="s1">    will-change: transform;</span></p>
-<p class="p1"><span class="s1">  }</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  .dk-logo {</span></p>
-<p class="p1"><span class="s1">    height: 54px;</span></p>
-<p class="p1"><span class="s1">    width: auto;</span></p>
-<p class="p1"><span class="s1">    margin-right: 40px;</span></p>
-<p class="p1"><span class="s1">    flex-shrink: 0;</span></p>
-<p class="p1"><span class="s1">  }</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  .compliance {</span></p>
-<p class="p1"><span class="s1">    color: #ffffff;</span></p>
-<p class="p1"><span class="s1">    font-size: 52px;</span></p>
-<p class="p1"><span class="s1">    letter-spacing: 2px;</span></p>
-<p class="p1"><span class="s1">  }</span></p>
-<p class="p1"><span class="s1">&lt;/style&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;body&gt;</span></p>
-<p class="p1"><span class="s1">  &lt;div id="canvas"&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;div id="track"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">  &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;script&gt;</span></p>
-<p class="p1"><span class="s1">  /* ===== CONFIG ===== */</span></p>
-<p class="p1"><span class="s1">  const SCROLL_SPEED = 120; // px per second</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  /* ===== DEMO ODDS (USED FOR TESTING) ===== */</span></p>
-<p class="p1"><span class="s1">  const demoItems = [</span></p>
-<p class="p1"><span class="s1">    "NHL | EDM Oilers @ VGK Golden Knights | ML: EDM +114 VGK −135",</span></p>
-<p class="p1"><span class="s1">    "NHL | EDM @ VGK | PL: VGK +1.5 (−225) EDM −1.5 (+185)",</span></p>
-<p class="p1"><span class="s1">    "NHL | EDM @ VGK | O/U 6.5 (O −110 U −110)",</span></p>
-<p class="p1"><span class="s1">    "NHL | LA Kings @ VAN Canucks | ML: LAK −175 VAN +145",</span></p>
-<p class="p1"><span class="s1">    "NHL | LAK @ VAN | PL: VAN +1.5 (−185) LAK −1.5 (+154)",</span></p>
-<p class="p1"><span class="s1">    "NHL | LAK @ VAN | O/U 6.5 (O −105 U −115)"</span></p>
-<p class="p1"><span class="s1">  ];</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  const LOGO_HTML = '&lt;img src="OSB_Linear_21+Logo_FullColor_OnDark.png" class="dk-logo"&gt;';</span></p>
-<p class="p1"><span class="s1">  const COMPLIANCE_HTML = '&lt;span class="compliance"&gt;ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.&lt;/span&gt;';</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  const track = document.getElementById("track");</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  let x = 0;</span></p>
-<p class="p1"><span class="s1">  let lastFrame = performance.now();</span></p>
-<p class="p1"><span class="s1">  let contentWidth = 0;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  function buildTicker() {</span></p>
-<p class="p1"><span class="s1">    const block = `</span></p>
-<p class="p1"><span class="s1">      ${LOGO_HTML}</span></p>
-<p class="p1"><span class="s1">      ${demoItems.join(" ⚡ ")}</span></p>
-<p class="p1"><span class="s1">      ${COMPLIANCE_HTML}</span></p>
-<p class="p1"><span class="s1">    `;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    /* Duplicate for seamless loop */</span></p>
-</body>
-</html>
+  <div id="canvas">
+    <div id="track"></div>
+  </div>
+
+<script>
+  const SCROLL_SPEED = 120;
+
+  const demoItems = [
+    "NHL | EDM Oilers @ VGK Golden Knights | ML: EDM +114 VGK −135",
+    "NHL | EDM @ VGK | PL: VGK +1.5 (−225) EDM −1.5 (+185)",
+    "NHL | EDM @ VGK | O/U 6.5 (O −110 U −110)",
+    "NHL | LA Kings @ VAN Canucks | ML: LAK −175 VAN +145",
+    "NHL | LAK @ VAN | PL: VAN +1.5 (−185) LAK −1.5 (+154)",
+    "NHL | LAK @ VAN | O/U 6.5 (O −105 U −115)"
+  ];
+
+  const track = document.getElementById("track");
+  let x = 0;

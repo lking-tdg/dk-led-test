@@ -5,6 +5,7 @@
 <title>DraftKings NHL Odds Ticker</title>
 
 <style>
+  /* ===== 8000 x 80 Ribbon Canvas ===== */
   html, body {
     margin: 0;
     padding: 0;
@@ -36,7 +37,8 @@
 
   /* ===== Color system ===== */
   .away { color: #ffffff; }
-  .home { color: #00ff9c; }
+  .home { color: #00ff9c; }       /* DraftKings green */
+  .vs   { color: #ffffff; margin: 0 12px; }
   .odds { color: #00ff9c; }
 
   .separator-logo {
@@ -55,27 +57,27 @@
 </head>
 
 <body>
-<div id="canvas">
-  <div id="track"></div>
-</div>
+  <div id="canvas">
+    <div id="track"></div>
+  </div>
 
 <script>
   const SCROLL_SPEED = 120;
 
   const demoItems = [
-    `<span class="away">EDM</span> @ <span class="home">VGK</span>
+    `<span class="away">EDM</span><span class="vs">@</span><span class="home">VGK</span>
      <span class="odds">ML: EDM +114  VGK −135</span>`,
 
-    `<span class="away">EDM</span> @ <span class="home">VGK</span>
+    `<span class="away">EDM</span><span class="vs">@</span><span class="home">VGK</span>
      <span class="odds">PL: VGK +1.5 (−225)  EDM −1.5 (+185)</span>`,
 
-    `<span class="away">EDM</span> @ <span class="home">VGK</span>
+    `<span class="away">EDM</span><span class="vs">@</span><span class="home">VGK</span>
      <span class="odds">O/U 6.5 (O −110  U −110)</span>`,
 
-    `<span class="away">LAK</span> @ <span class="home">VAN</span>
+    `<span class="away">LAK</span><span class="vs">@</span><span class="home">VAN</span>
      <span class="odds">ML: LAK −175  VAN +145</span>`,
 
-    `<span class="away">LAK</span> @ <span class="home">VAN</span>
+    `<span class="away">LAK</span><span class="vs">@</span><span class="home">VAN</span>
      <span class="odds">O/U 6.5 (O −105  U −115)</span>`
   ];
 
@@ -87,7 +89,7 @@
 
   function buildTicker() {
     const separator = `
-      <img src="OSB_21+Logo_FullColor_OnDark.png" class="separator-logo">
+      <img src="OSB_21+Logo_FullColor_OnDark.png" class="separator-logo" />
     `;
 
     const compliance = `
@@ -126,3 +128,4 @@
 </script>
 </body>
 </html>
+``

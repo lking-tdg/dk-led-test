@@ -34,3 +34,95 @@
     will-change: transform;
   }
 
+  /* ===== Color system ===== */
+  .away { color: #ffffff; }
+  .home { color: #00ff9c; }
+  .odds { color: #00ff9c; }
+
+  .separator-logo {
+    height: 48px;
+    margin: 0 32px;
+    vertical-align: middle;
+  }
+
+  .compliance {
+    font-size: 50px;
+    color: #ffffff;
+    letter-spacing: 2px;
+    margin-left: 32px;
+  }
+</style>
+</head>
+
+<body>
+<div id="canvas">
+  <div id="track"></div>
+</div>
+
+<script>
+  const SCROLL_SPEED = 120;
+
+  const demoItems = [
+    `<span class="away">EDM</span> @ <span class="home">VGK</span>
+     <span class="odds">ML: EDM +114  VGK −135</span>`,
+
+    `<span class="away">EDM</span> @ <span class="home">VGK</span>
+     <span class="odds">PL: VGK +1.5 (−225)  EDM −1.5 (+185)</span>`,
+
+    `<span class="away">EDM</span> @ <span class="home">VGK</span>
+     <span class="odds">O/U 6.5 (O −110  U −110)</span>`,
+
+    `<span class="away">LAK</span> @ <span class="home">VAN</span>
+     <span class="odds">ML: LAK −175  VAN +145</span>`,
+
+    `<span class="away">LAK</span> @ <span class="home">VAN</span>
+     <span class="odds">O/U 6.5 (O −105  U −115)</span>`
+  ];
+
+  const track = document.getElementById("track");
+
+  let x = 0;
+  let last = performance.now();
+  let contentWidth = 0;
+
+  function buildTicker() {
+    const separator = `
+      <img src="OSB_21+Logo_FullColor_OnDark.png" class="separator-logo">
+    `;
+
+    const compliance = `
+      <span class="compliance">
+        ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.
+      </span>
+    `;
+
+    const blockHTML = `
+      ${separator}
+      ${demoItems.join(separator)}
+      ${separator}
+      ${compliance}
+    `;
+
+    track.innerHTML = `<span>${blockHTML}</span><span>${blockHTML}</span>`;
+
+    requestAnimationFrame(() => {
+      contentWidth = track.scrollWidth / 2;
+    });
+  }
+
+  function animate(now) {
+    const dt = (now - last) / 1000;
+    last = now;
+
+    x -= SCROLL_SPEED * dt;
+    if (Math.abs(x) >= contentWidth) x = 0;
+
+    track.style.transform = `translateX(${x}px)`;
+    requestAnimationFrame(animate);
+  }
+
+  buildTicker();
+  requestAnimationFrame(animate);
+</script>
+</body>
+</html>

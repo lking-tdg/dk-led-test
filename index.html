@@ -66,44 +66,44 @@
 </div>
 
 <script>
-/* -------------------------------
-   DRAFTKINGS DATA (FROM JSON)
--------------------------------- */
+/* -----------------------------
+   GAME DATA (FROM DK JSON)
+------------------------------ */
 
 var GAMES = [
   {
     away: "ANA DUCKS",
     home: "EDM OILERS",
-    moneyline: "+160 / -192",
-    puckline: "+1.5 -350 | -1.5 +275",
+    moneyline: "ML +160 / -192",
+    puckline: "PL +1.5 -350 | -1.5 +275",
     total: "O/U 6.5 O -110 / U -110"
   },
   {
     away: "FLA PANTHERS",
     home: "NY ISLANDERS",
-    moneyline: "-170 / +142",
-    puckline: "+1.5 -200 | -1.5 +165",
+    moneyline: "ML -170 / +142",
+    puckline: "PL +1.5 -200 | -1.5 +165",
     total: "O/U 5.5 O -105 / U -115"
   },
   {
     away: "DAL STARS",
     home: "PIT PENGUINS",
-    moneyline: "+210 / -258",
-    puckline: "+1.5 -135 | -1.5 +115",
+    moneyline: "ML +210 / -258",
+    puckline: "PL +1.5 -135 | -1.5 +115",
     total: "O/U 6.0 O -108 / U -112"
   }
 ];
 
-/* -------------------------------
+/* -----------------------------
    MARKET ROTATION
--------------------------------- */
+------------------------------ */
 
 var MARKETS = ["moneyline", "puckline", "total"];
 var marketIndex = 0;
 
-/* -------------------------------
-   TICKER ENGINE
--------------------------------- */
+/* -----------------------------
+   TICKER ENGINE (PROVEN SAFE)
+------------------------------ */
 
 var track = document.getElementById("track");
 var SPEED = 120;
@@ -116,3 +116,51 @@ requestAnimationFrame(tick);
 
 function buildTicker() {
   var items = [];
+  var marketKey = MARKETS[marketIndex];
+
+  for (var i = 0; i < GAMES.length; i++) {
+    var g = GAMES[i];
+
+    var item =
+      g.away +
+      " <span class='vs'>@</span> " +
+      g.home +
+      " <span class='odds'>" +
+      g[marketKey] +
+      "</span>";
+
+    items.push(item);
+  }
+
+  var sep = "<img src='OSB+Logo_FullColor_OnDark.png";
+  var legal = "<span class='compliance'>ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.</span>";
+  var html = sep + items.join(sep) + sep + legal;
+
+  track.innerHTML =
+    "<span class='block'>" +
+    html +
+    "</span><span class='block'>" +
+    html +
+    "</span>";
+
+  width = track.scrollWidth / 2;
+  x = 0;
+}
+
+function tick(now) {
+  var dt = (now - last) / 1000;
+  last = now;
+
+  x -= SPEED * dt;
+
+  if (Math.abs(x) >= width) {
+    marketIndex = (marketIndex + 1) % MARKETS.length;
+    buildTicker();
+  }
+
+  track.style.transform = "translateX(" + x + "px)";
+  requestAnimationFrame(tick);
+}
+</script>
+</body>
+</html>

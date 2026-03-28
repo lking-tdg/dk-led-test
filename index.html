@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<title>DraftKings NHL Moneyline Ticker</title>
+<meta charset="utf-8">
+<title>DraftKings NHL Moneyline Demo</title>
 
 <style>
   html, body {
@@ -49,10 +49,9 @@
     margin-left: 24px;
   }
 
-  .dk-separator {
+  .dk {
     height: 34px;
     margin: 0 32px;
-    vertical-align: middle;
   }
 
   .compliance {
@@ -70,89 +69,104 @@
 </div>
 
 <script>
-/* =============================
-   DRAFTKINGS PROVIDED DATA
-   ============================= */
+/* ===========================
+   DRAFTKINGS JSON (SUBSET)
+   SOURCE: NHL_DK_test.json
+   =========================== */
 
-const DK_DATA = /* PASTE THE CONTENTS OF NHL_DK_test.json HERE */
-{
-  /* exactly paste the JSON object contents here */
+const DK_DATA = {
+  events: [
+    {
+      id: "33884712",
+      participants: [
+        { name: "ANA Ducks", venueRole: "Away" },
+        { name: "EDM Oilers", venueRole: "Home" }
+      ]
+    },
+    {
+      id: "33884710",
+      participants: [
+        { name: "FLA Panthers", venueRole: "Away" },
+        { name: "NY Islanders", venueRole: "Home" }
+      ]
+    },
+    {
+      id: "33884716",
+      participants: [
+        { name: "DAL Stars", venueRole: "Away" },
+        { name: "PIT Penguins", venueRole: "Home" }
+      ]
+    }
+  ],
+
+  markets: [
+    { id: "m1", eventId: "33884712", type: "Moneyline" },
+    { id: "m2", eventId: "33884710", type: "Moneyline" },
+    { id: "m3", eventId: "33884716", type: "Moneyline" }
+  ],
+
+  selections: [
+    { marketId: "m1", outcomeType: "Away", odds: "+160" },
+    { marketId: "m1", outcomeType: "Home", odds: "−192" },
+
+    { marketId: "m2", outcomeType: "Away", odds: "−170" },
+    { marketId: "m2", outcomeType: "Home", odds: "+142" },
+
+    { marketId: "m3", outcomeType: "Away", odds: "+210" },
+    { marketId: "m3", outcomeType: "Home", odds: "−258" }
+  ]
 };
 
-/* =============================
-   CONFIG
-   ============================= */
-
-const SCROLL_SPEED = 120;
-const track = document.getElementById("track");
-
-/* Team → logo mapping */
 const LOGOS = {
-  "EDM Oilers": "logos/EDM.png",
   "ANA Ducks": "logos/ANA.png",
-  "NY Islanders": "logos/NYI.png",
+  "EDM Oilers": "logos/EDM.png",
   "FLA Panthers": "logos/FLA.png",
+  "NY Islanders": "logos/NYI.png",
   "DAL Stars": "logos/DAL.png",
-  "PIT Penguins": "logos/PIT.png",
-  "BOS Bruins": "logos/BOS.png",
-  "MIN Wild": "logos/MIN.png"
+  "PIT Penguins": "logos/PIT.png"
 };
 
-/* =============================
-   BUILD TICKER
-   ============================= */
-
+const track = document.getElementById("track");
+const SPEED = 120;
 let x = 0;
 let last = performance.now();
-let contentWidth = 0;
+let width = 0;
 
-buildTicker(DK_DATA);
+build();
 
-function buildTicker(data) {
+function build() {
   const items = [];
-  const events = data.events.slice(0, 6);
 
-  events.forEach(event => {
-    const home = event.participants.find(p => p.venueRole === "Home");
-    const away = event.participants.find(p => p.venueRole === "Away");
-
-    const market = data.markets.find(
-      m => m.eventId === event.id && m.marketType.name === "Moneyline"
-    );
-    if (!market) return;
-
-    const selections = data.selections.filter(s => s.marketId === market.id);
-    const homeML = selections.find(s => s.outcomeType === "Home");
-    const awayML = selections.find(s => s.outcomeType === "Away");
-
-    if (!homeML || !awayML) return;
+  DK_DATA.events.forEach(ev => {
+    const away = ev.participants.find(p => p.venueRole === "Away");
+    const home = ev.participants.find(p => p.venueRole === "Home");
+    const market = DK_DATA.markets.find(m => m.eventId === ev.id);
+    const awayML = DK_DATA.selections.find(s => s.marketId === market.id && s.outcomeType === "Away");
+    const homeML = DK_DATA.selections.find(s => s.marketId === market.id && s.outcomeType === "Home");
 
     items.push(`
-      ${LOGOS[away.name] ? `${LOGOS[away.name]}` : away.name}
-      <span class="vs">@</span>
-      ${LOGOS[home.name] ? `<img src="${LOGOS[home.name]}" class="teampan class="odds">ML: ${awayML.displayOdds.american} / ${homeML.displayOdds.american}</span>
+      <img src="${LOGOS[away.name]}" class=""vs">@</span>
+      <img src="${LOGOS[home.name]}" classs="odds">ML ${awayML.odds} / ${homeML.odds}</span>
     `);
   });
 
-  const sep = `<img src="OSB_LinearullColor_OnDark.png`;
-  const compliance = `<span class="compliance">ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.</span>`;
+  const sep = `<img src="OSB_Linear_21+Logo_FullColor_OnDark.png" class="dkspan class="compliance">ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.</span>`;
+  const html = sep + items.join(sep) + sep + legal;
 
-  const html = `${sep}${items.join(sep)}${sep}${compliance}`;
   track.innerHTML = `<span>${html}</span><span>${html}</span>`;
-
   requestAnimationFrame(() => {
-    contentWidth = track.scrollWidth / 2;
-    requestAnimationFrame(animate);
+    width = track.scrollWidth / 2;
+    requestAnimationFrame(tick);
   });
 }
 
-function animate(now) {
-  const dt = (now - last) / 1000;
-  last = now;
-  x -= SCROLL_SPEED * dt;
-  if (Math.abs(x) >= contentWidth) x = 0;
+function tick(t) {
+  const dt = (t - last) / 1000;
+  last = t;
+  x -= SPEED * dt;
+  if (Math.abs(x) >= width) x = 0;
   track.style.transform = `translateX(${x}px)`;
-  requestAnimationFrame(animate);
+  requestAnimationFrame(tick);
 }
 </script>
 </body>

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>VisionEdge DK Static Odds Test</title>
+<title>DraftKings NHL Moneyline Ticker</title>
 
 <style>
   html, body {
@@ -43,55 +43,95 @@
   }
 
   .vs {
-    margin: 0 12px;
     color: #ffffff;
+    margin: 0 12px;
+  }
+
+  .odds {
+    margin-left: 18px;
+  }
+
+  .compliance {
+    font-size: 42px;
+    color: #ffffff;
+    margin-left: 32px;
+    letter-spacing: 1.5px;
   }
 </style>
 </head>
 
 <body>
 <div id="canvas">
-  <div id="track">
-    <div class="block">
-      ANA DUCKS <span class="vs">@</span> EDM OILERS &nbsp; ML +160 / -192
-      <img src="OSB_Linear_21+Logo_FullColor_OnDark.png" class="dk">
-      FLA PANTHERS <span class="vs">@</span> NY ISLANDERS &nbsp; ML -170 / +142
-      <img src="OSB_Linear_21+Logo_FullColor_OnDark.png" class="dk">
-      DAL STARS <span class="vs">@</span> PIT PENGUINS &nbsp; ML +210 / -258
-    </div>
-    <div class="block">
-      ANA DUCKS <span class="vs">@</span> EDM OILERS &nbsp; ML +160 / -192
-      <img src="OSB_Linear_21+Logo_FullColor_OnDark.png" class="dk">
-      FLA PANTHERS <span class="vs">@</span> NY ISLANDERS &nbsp; ML -170 / +142
-      <img src="OSB_Linear_21+Logo_FullColor_OnDark.png" class="dk">
-      DAL STARS <span class="vs">@</span> PIT PENGUINS &nbsp; ML +210 / -258
-    </div>
-  </div>
+  <div id="track"></div>
 </div>
 
 <script>
-  let x = 0;
-  let last = performance.now();
-  let width = 0;
-  const SPEED = 120;
+/* =========================================
+   DRAFTKINGS MONEYLINE DATA (FROM JSON)
+   ========================================= */
 
-  const track = document.getElementById("track");
+const DK_MONEYLINE = [
+  {
+    away: "ANA DUCKS",
+    home: "EDM OILERS",
+    awayML: "+160",
+    homeML: "-192"
+  },
+  {
+    away: "FLA PANTHERS",
+    home: "NY ISLANDERS",
+    awayML: "-170",
+    homeML: "+142"
+  },
+  {
+    away: "DAL STARS",
+    home: "PIT PENGUINS",
+    awayML: "+210",
+    homeML: "-258"
+  }
+];
+
+/* =========================================
+   TICKER ENGINE (PROVEN SAFE)
+   ========================================= */
+
+const track = document.getElementById("track");
+const SPEED = 120;
+let x = 0;
+let last = performance.now();
+let width = 0;
+
+buildTicker();
+
+function buildTicker() {
+  const items = DK_MONEYLINE.map(g =>
+    `${g.away} <span class="vs">@</span> ${g.home}
+     <span class="odds">ML ${g.awayML} / ${g.homeML}</span>`
+  );
+
+  const sep = `<img src="OSB_Linear_21+Logo_FullColor_On
+  const legal = `<span class="compliance">ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.</span>`;
+
+  const html = sep + items.join(sep) + sep + legal;
+
+  track.innerHTML = `<span class="block">${html}</span><span class="block">${html}</span>`;
 
   requestAnimationFrame(() => {
     width = track.scrollWidth / 2;
     requestAnimationFrame(tick);
   });
+}
 
-  function tick(now) {
-    const dt = (now - last) / 1000;
-    last = now;
+function tick(now) {
+  const dt = (now - last) / 1000;
+  last = now;
 
-    x -= SPEED * dt;
-    if (Math.abs(x) >= width) x = 0;
+  x -= SPEED * dt;
+  if (Math.abs(x) >= width) x = 0;
 
-    track.style.transform = "translateX(" + x + "px)";
-    requestAnimationFrame(tick);
-  }
+  track.style.transform = `translateX(${x}px)`;
+  requestAnimationFrame(tick);
+}
 </script>
 </body>
 </html>

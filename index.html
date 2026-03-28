@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>DraftKings NHL Odds Ticker</title>
+<title>DraftKings NHL Moneyline Ticker</title>
 
 <style>
   html, body {
@@ -31,35 +31,30 @@
     will-change: transform;
   }
 
-  /* ===== Team logos ===== */
-  .team {
+  .team-logo {
     height: 48px;
-    width: auto;
-    margin: 0 8px;
+    margin: 0 10px;
     vertical-align: middle;
   }
 
   .vs {
     color: #ffffff;
     font-size: 48px;
-    margin: 0 12px;
+    margin: 0 14px;
   }
 
-  /* ===== Odds ===== */
   .odds {
     font-size: 64px;
     color: #00ff9c;
     margin-left: 24px;
   }
 
-  /* ===== DraftKings linear separator ===== */
   .dk-separator {
     height: 34px;
     margin: 0 32px;
     vertical-align: middle;
   }
 
-  /* ===== Compliance ===== */
   .compliance {
     font-size: 42px;
     color: #ffffff;
@@ -75,68 +70,93 @@
 </div>
 
 <script>
-  const SCROLL_SPEED = 120;
+const SCROLL_SPEED = 120;
+const track = document.getElementById("track");
 
-  const demoItems = [
-    `
-    <img src="nhl-edm.png" class="team</span>
-    <img src="nhl-vgk.png" class="dds">ML: EDM +114  VGK −135</span>
-    `,
-    `
-    <img src="nhl-edm.png class="vs">@</span>
-    <img src="nhl-vgk.png class="odds">PL: VGK +1.5 (−225)  EDM −1.5 (+185)</span>
-    `,
-    `
-    <img src="nhl-edm.png"class="vs">@</span>
-    <img src="nhl-vgk.png" class"odds">O/U 6.5 (O −110  U −110)</span>
-    `,
-    `
-    <img src="nhl-lakspan class="vs">@</span>
-    <img src="nhl-van.png" class"odds">ML: LAK −175  VAN +145</span>
-    `
-  ];
+/* Map team names → logo files */
+const TEAM_LOGOS = {
+  "EDM Oilers": "logos/EDM.png",
+  "ANA Ducks": "logos/ANA.png",
+  "NY Islanders": "logos/NYI.png",
+  "FLA Panthers": "logos/FLA.png",
+  "DAL Stars": "logos/DAL.png",
+  "PIT Penguins": "logos/PIT.png",
+  "BOS Bruins": "logos/BOS.png",
+  "MIN Wild": "logos/MIN.png"
+  // add others as needed
+};
 
-  const track = document.getElementById("track");
+let x = 0;
+let last = performance.now();
+let contentWidth = 0;
 
-  let x = 0;
-  let last = performance.now();
-  let contentWidth = 0;
+fetch("NHL_DK_test.json")
+  .then(res => res.json())
+  .then(data => buildTicker(data));
 
-  function buildTicker() {
-    const separator = `
-      <img src="OSB_Linear_21+Logo_FullColor_OnDark.png" classt compliance = `
-      <span class="compliance">
-        ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.
+function buildTicker(data) {
+  const events = data.events.slice(0, 6); // limit for clarity
+  const items = [];
+
+  events.forEach(event => {
+    const home = event.participants.find(p => p.venueRole === "Home");
+    const away = event.participants.find(p => p.venueRole === "Away");
+
+    // Find Moneyline market
+    const market = data.markets.find(m =>
+      m.eventId === event.id &&
+      m.marketType.name === "Moneyline"
+    );
+
+    if (!market) return;
+
+    const selections = data.selections.filter(s => s.marketId === market.id);
+
+    const homeSel = selections.find(s => s.outcomeType === "Home");
+    const awaySel = selections.find(s => s.outcomeType === "Away");
+
+    if (!homeSel || !awaySel) return;
+
+    items.push(`
+      <img src="${TEAM_LOGOS[away.name] ||pan class="vs">@</span>
+      <img src="${TEAM_LOGOS[home.name] || ""}" class="team-logo    ML: ${awaySel.displayOdds.american} / ${homeSel.displayOdds.american}
       </span>
-    `;
+    `);
+  });
 
-    const blockHTML = `
-      ${separator}
-      ${demoItems.join(separator)}
-      ${separator}
-      ${compliance}
-    `;
+  const separator = `
+    <img src="OSB_Linear_21+Logo_FullColor_OnDark.png"nst compliance = `
+    <span class="compliance">
+      ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.
+    </span>
+  `;
 
-    track.innerHTML = `<span>${blockHTML}</span><span>${blockHTML}</span>`;
+  const blockHTML = `
+    ${separator}
+    ${items.join(separator)}
+    ${separator}
+    ${compliance}
+  `;
 
-    requestAnimationFrame(() => {
-      contentWidth = track.scrollWidth / 2;
-    });
-  }
+  track.innerHTML = `<span>${blockHTML}</span><span>${blockHTML}</span>`;
 
-  function animate(now) {
-    const dt = (now - last) / 1000;
-    last = now;
+  requestAnimationFrame(() => {
+    contentWidth = track.scrollWidth / 2;
+  });
 
-    x -= SCROLL_SPEED * dt;
-    if (Math.abs(x) >= contentWidth) x = 0;
-
-    track.style.transform = \`translateX(\${x}px)\`;
-    requestAnimationFrame(animate);
-  }
-
-  buildTicker();
   requestAnimationFrame(animate);
+}
+
+function animate(now) {
+  const dt = (now - last) / 1000;
+  last = now;
+
+  x -= SCROLL_SPEED * dt;
+  if (Math.abs(x) >= contentWidth) x = 0;
+
+  track.style.transform = `translateX(${x}px)`;
+  requestAnimationFrame(animate);
+}
 </script>
 </body>
 </html>

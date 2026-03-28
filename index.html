@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>VisionEdge Loop Test</title>
+<title>VisionEdge DK Static Odds Test</title>
 
 <style>
   html, body {
@@ -17,13 +17,14 @@
   #canvas {
     width: 8000px;
     height: 80px;
-    overflow: hidden;
     display: flex;
     align-items: center;
+    overflow: hidden;
   }
 
   #track {
     display: inline-flex;
+    align-items: center;
     white-space: nowrap;
     font-family: Arial, sans-serif;
     font-size: 60px;
@@ -34,6 +35,17 @@
   .block {
     margin-right: 80px;
   }
+
+  .dk {
+    height: 34px;
+    margin: 0 32px;
+    vertical-align: middle;
+  }
+
+  .vs {
+    margin: 0 12px;
+    color: #ffffff;
+  }
 </style>
 </head>
 
@@ -41,10 +53,18 @@
 <div id="canvas">
   <div id="track">
     <div class="block">
-      VISIONEDGE LOOP TEST — NHL ODDS TICKER MOTION VERIFIED
+      ANA DUCKS <span class="vs">@</span> EDM OILERS &nbsp; ML +160 / -192
+      <img src="OSB_Linear_21+Logo_FullColor_OnDark.png" class="dk">
+      FLA PANTHERS <span class="vs">@</span> NY ISLANDERS &nbsp; ML -170 / +142
+      <img src="OSB_Linear_21+Logo_FullColor_OnDark.png" class="dk">
+      DAL STARS <span class="vs">@</span> PIT PENGUINS &nbsp; ML +210 / -258
     </div>
     <div class="block">
-      VISIONEDGE LOOP TEST — NHL ODDS TICKER MOTION VERIFIED
+      ANA DUCKS <span class="vs">@</span> EDM OILERS &nbsp; ML +160 / -192
+      <img src="OSB_Linear_21+Logo_FullColor_OnDark.png" class="dk">
+      FLA PANTHERS <span class="vs">@</span> NY ISLANDERS &nbsp; ML -170 / +142
+      <img src="OSB_Linear_21+Logo_FullColor_OnDark.png" class="dk">
+      DAL STARS <span class="vs">@</span> PIT PENGUINS &nbsp; ML +210 / -258
     </div>
   </div>
 </div>
@@ -53,6 +73,7 @@
   let x = 0;
   let last = performance.now();
   let width = 0;
+  const SPEED = 120;
 
   const track = document.getElementById("track");
 
@@ -65,7 +86,7 @@
     const dt = (now - last) / 1000;
     last = now;
 
-    x -= 120 * dt; // scroll speed
+    x -= SPEED * dt;
     if (Math.abs(x) >= width) x = 0;
 
     track.style.transform = "translateX(" + x + "px)";
@@ -74,4 +95,3 @@
 </script>
 </body>
 </html>
-``

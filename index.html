@@ -33,7 +33,7 @@
   }
 
   .block {
-    margin-right: 80px;
+    margin-right: 120px;
   }
 
   .dk {
@@ -54,7 +54,7 @@
   .compliance {
     font-size: 42px;
     color: #ffffff;
-    margin-left: 32px;
+    margin-left: 48px;
     letter-spacing: 1.5px;
   }
 </style>
@@ -66,9 +66,9 @@
 </div>
 
 <script>
-/* -----------------------------
-   GAME DATA (FROM DK JSON)
------------------------------- */
+/* ===============================
+   DK DATA (DERIVED FROM JSON)
+   =============================== */
 
 var GAMES = [
   {
@@ -94,60 +94,65 @@ var GAMES = [
   }
 ];
 
-/* -----------------------------
-   MARKET ROTATION
------------------------------- */
-
 var MARKETS = ["moneyline", "puckline", "total"];
 var marketIndex = 0;
 
-/* -----------------------------
-   TICKER ENGINE (PROVEN SAFE)
------------------------------- */
+/* ===============================
+   TICKER ENGINE (HARDENED)
+   =============================== */
 
 var track = document.getElementById("track");
 var SPEED = 120;
 var x = 0;
 var width = 0;
 var last = performance.now();
+var ready = false;
 
 buildTicker();
-requestAnimationFrame(tick);
 
 function buildTicker() {
-  var items = [];
+  ready = false;
+
   var marketKey = MARKETS[marketIndex];
+  var items = [];
 
   for (var i = 0; i < GAMES.length; i++) {
     var g = GAMES[i];
-
-    var item =
+    items.push(
       g.away +
       " <span class='vs'>@</span> " +
       g.home +
       " <span class='odds'>" +
       g[marketKey] +
-      "</span>";
-
-    items.push(item);
+      "</span>"
+    );
   }
 
-  var sep = "<img src='OSB+Logo_FullColor_OnDark.png";
+  var sep = "<img src='OSB_Linear_llColor_OnDark.png";
   var legal = "<span class='compliance'>ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.</span>";
+
   var html = sep + items.join(sep) + sep + legal;
 
   track.innerHTML =
-    "<span class='block'>" +
-    html +
-    "</span><span class='block'>" +
-    html +
-    "</span>";
+    "<span class='block'>" + html + "</span>" +
+    "<span class='block'>" + html + "</span>";
 
-  width = track.scrollWidth / 2;
   x = 0;
+
+  setTimeout(function () {
+    width = track.scrollWidth / 2;
+    if (width > 0) {
+      ready = true;
+    }
+  }, 100);
 }
 
 function tick(now) {
+  if (!ready) {
+    requestAnimationFrame(tick);
+    return;
+  }
+
   var dt = (now - last) / 1000;
   last = now;
 
@@ -161,6 +166,8 @@ function tick(now) {
   track.style.transform = "translateX(" + x + "px)";
   requestAnimationFrame(tick);
 }
+
+requestAnimationFrame(tick);
 </script>
 </body>
 </html>

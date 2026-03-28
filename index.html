@@ -31,15 +31,15 @@
     will-change: transform;
   }
 
-  .team-logo {
+  .team {
     height: 48px;
     margin: 0 10px;
     vertical-align: middle;
   }
 
   .vs {
-    color: #ffffff;
     font-size: 48px;
+    color: #fff;
     margin: 0 14px;
   }
 
@@ -57,9 +57,9 @@
 
   .compliance {
     font-size: 42px;
-    color: #ffffff;
-    letter-spacing: 1.5px;
+    color: #fff;
     margin-left: 32px;
+    letter-spacing: 1.5px;
   }
 </style>
 </head>
@@ -70,11 +70,24 @@
 </div>
 
 <script>
+/* =============================
+   DRAFTKINGS PROVIDED DATA
+   ============================= */
+
+const DK_DATA = /* PASTE THE CONTENTS OF NHL_DK_test.json HERE */
+{
+  /* exactly paste the JSON object contents here */
+};
+
+/* =============================
+   CONFIG
+   ============================= */
+
 const SCROLL_SPEED = 120;
 const track = document.getElementById("track");
 
-/* Map team names → logo files */
-const TEAM_LOGOS = {
+/* Team → logo mapping */
+const LOGOS = {
   "EDM Oilers": "logos/EDM.png",
   "ANA Ducks": "logos/ANA.png",
   "NY Islanders": "logos/NYI.png",
@@ -83,77 +96,61 @@ const TEAM_LOGOS = {
   "PIT Penguins": "logos/PIT.png",
   "BOS Bruins": "logos/BOS.png",
   "MIN Wild": "logos/MIN.png"
-  // add others as needed
 };
+
+/* =============================
+   BUILD TICKER
+   ============================= */
 
 let x = 0;
 let last = performance.now();
 let contentWidth = 0;
 
-fetch("NHL_DK_test.json")
-  .then(res => res.json())
-  .then(data => buildTicker(data));
+buildTicker(DK_DATA);
 
 function buildTicker(data) {
-  const events = data.events.slice(0, 6); // limit for clarity
   const items = [];
+  const events = data.events.slice(0, 6);
 
   events.forEach(event => {
     const home = event.participants.find(p => p.venueRole === "Home");
     const away = event.participants.find(p => p.venueRole === "Away");
 
-    // Find Moneyline market
-    const market = data.markets.find(m =>
-      m.eventId === event.id &&
-      m.marketType.name === "Moneyline"
+    const market = data.markets.find(
+      m => m.eventId === event.id && m.marketType.name === "Moneyline"
     );
-
     if (!market) return;
 
     const selections = data.selections.filter(s => s.marketId === market.id);
+    const homeML = selections.find(s => s.outcomeType === "Home");
+    const awayML = selections.find(s => s.outcomeType === "Away");
 
-    const homeSel = selections.find(s => s.outcomeType === "Home");
-    const awaySel = selections.find(s => s.outcomeType === "Away");
-
-    if (!homeSel || !awaySel) return;
+    if (!homeML || !awayML) return;
 
     items.push(`
-      <img src="${TEAM_LOGOS[away.name] ||pan class="vs">@</span>
-      <img src="${TEAM_LOGOS[home.name] || ""}" class="team-logo    ML: ${awaySel.displayOdds.american} / ${homeSel.displayOdds.american}
-      </span>
+      ${LOGOS[away.name] ? `${LOGOS[away.name]}` : away.name}
+      <span class="vs">@</span>
+      ${LOGOS[home.name] ? `<img src="${LOGOS[home.name]}" class="teampan class="odds">ML: ${awayML.displayOdds.american} / ${homeML.displayOdds.american}</span>
     `);
   });
 
-  const separator = `
-    <img src="OSB_Linear_21+Logo_FullColor_OnDark.png"nst compliance = `
-    <span class="compliance">
-      ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.
-    </span>
-  `;
+  const sep = `<img src="OSB_LinearullColor_OnDark.png`;
+  const compliance = `<span class="compliance">ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.</span>`;
 
-  const blockHTML = `
-    ${separator}
-    ${items.join(separator)}
-    ${separator}
-    ${compliance}
-  `;
-
-  track.innerHTML = `<span>${blockHTML}</span><span>${blockHTML}</span>`;
+  const html = `${sep}${items.join(sep)}${sep}${compliance}`;
+  track.innerHTML = `<span>${html}</span><span>${html}</span>`;
 
   requestAnimationFrame(() => {
     contentWidth = track.scrollWidth / 2;
+    requestAnimationFrame(animate);
   });
-
-  requestAnimationFrame(animate);
 }
 
 function animate(now) {
   const dt = (now - last) / 1000;
   last = now;
-
   x -= SCROLL_SPEED * dt;
   if (Math.abs(x) >= contentWidth) x = 0;
-
   track.style.transform = `translateX(${x}px)`;
   requestAnimationFrame(animate);
 }

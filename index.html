@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="utf-8">
-<title>DraftKings NHL Moneyline Demo</title>
+<title>VisionEdge Diagnostic</title>
 
 <style>
   html, body {
@@ -10,164 +10,24 @@
     padding: 0;
     width: 8000px;
     height: 80px;
-    background: #000;
-    overflow: hidden;
-  }
-
-  #canvas {
-    width: 8000px;
-    height: 80px;
-    display: flex;
-    align-items: center;
+    background: black;
     overflow: hidden;
   }
 
   #track {
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
-    gap: 96px;
-    font-family: Arial, sans-serif;
-    will-change: transform;
-  }
-
-  .team {
-    height: 48px;
-    margin: 0 10px;
-    vertical-align: middle;
-  }
-
-  .vs {
-    font-size: 48px;
-    color: #fff;
-    margin: 0 14px;
-  }
-
-  .odds {
-    font-size: 64px;
     color: #00ff9c;
-    margin-left: 24px;
-  }
-
-  .dk {
-    height: 34px;
-    margin: 0 32px;
-  }
-
-  .compliance {
-    font-size: 42px;
-    color: #fff;
-    margin-left: 32px;
-    letter-spacing: 1.5px;
+    font-size: 60px;
+    font-family: Arial, sans-serif;
+    white-space: nowrap;
+    position: absolute;
+    left: 0;
+    top: 10px;
   }
 </style>
 </head>
 
 <body>
-<div id="canvas">
-  <div id="track"></div>
-</div>
-
-<script>
-/* ===========================
-   DRAFTKINGS JSON (SUBSET)
-   SOURCE: NHL_DK_test.json
-   =========================== */
-
-const DK_DATA = {
-  events: [
-    {
-      id: "33884712",
-      participants: [
-        { name: "ANA Ducks", venueRole: "Away" },
-        { name: "EDM Oilers", venueRole: "Home" }
-      ]
-    },
-    {
-      id: "33884710",
-      participants: [
-        { name: "FLA Panthers", venueRole: "Away" },
-        { name: "NY Islanders", venueRole: "Home" }
-      ]
-    },
-    {
-      id: "33884716",
-      participants: [
-        { name: "DAL Stars", venueRole: "Away" },
-        { name: "PIT Penguins", venueRole: "Home" }
-      ]
-    }
-  ],
-
-  markets: [
-    { id: "m1", eventId: "33884712", type: "Moneyline" },
-    { id: "m2", eventId: "33884710", type: "Moneyline" },
-    { id: "m3", eventId: "33884716", type: "Moneyline" }
-  ],
-
-  selections: [
-    { marketId: "m1", outcomeType: "Away", odds: "+160" },
-    { marketId: "m1", outcomeType: "Home", odds: "−192" },
-
-    { marketId: "m2", outcomeType: "Away", odds: "−170" },
-    { marketId: "m2", outcomeType: "Home", odds: "+142" },
-
-    { marketId: "m3", outcomeType: "Away", odds: "+210" },
-    { marketId: "m3", outcomeType: "Home", odds: "−258" }
-  ]
-};
-
-const LOGOS = {
-  "ANA Ducks": "logos/ANA.png",
-  "EDM Oilers": "logos/EDM.png",
-  "FLA Panthers": "logos/FLA.png",
-  "NY Islanders": "logos/NYI.png",
-  "DAL Stars": "logos/DAL.png",
-  "PIT Penguins": "logos/PIT.png"
-};
-
-const track = document.getElementById("track");
-const SPEED = 120;
-let x = 0;
-let last = performance.now();
-let width = 0;
-
-build();
-
-function build() {
-  const items = [];
-
-  DK_DATA.events.forEach(ev => {
-    const away = ev.participants.find(p => p.venueRole === "Away");
-    const home = ev.participants.find(p => p.venueRole === "Home");
-    const market = DK_DATA.markets.find(m => m.eventId === ev.id);
-    const awayML = DK_DATA.selections.find(s => s.marketId === market.id && s.outcomeType === "Away");
-    const homeML = DK_DATA.selections.find(s => s.marketId === market.id && s.outcomeType === "Home");
-
-    items.push(`
-      <img src="${LOGOS[away.name]}" class=""vs">@</span>
-      <img src="${LOGOS[home.name]}" classs="odds">ML ${awayML.odds} / ${homeML.odds}</span>
-    `);
-  });
-
-  const sep = `<img src="OSB_Linear_21+Logo_FullColor_OnDark.png" class="dkspan class="compliance">ODDS SUBJECT TO CHANGE. ELIGIBILITY RESTRICTIONS APPLY.</span>`;
-  const html = sep + items.join(sep) + sep + legal;
-
-  track.innerHTML = `<span>${html}</span><span>${html}</span>`;
-  requestAnimationFrame(() => {
-    width = track.scrollWidth / 2;
-    requestAnimationFrame(tick);
-  });
-}
-
-function tick(t) {
-  const dt = (t - last) / 1000;
-  last = t;
-  x -= SPEED * dt;
-  if (Math.abs(x) >= width) x = 0;
-  track.style.transform = `translateX(${x}px)`;
-  requestAnimationFrame(tick);
-}
-</script>
+  <div id="track">✅ VISIONEDGE HTML IS RENDERING TEXT CORRECTLY</div>
 </body>
 </html>
+``
